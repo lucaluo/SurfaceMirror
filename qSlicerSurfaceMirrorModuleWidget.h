@@ -83,6 +83,13 @@ protected slots:
 	void createPlane();
 	void hidePlane();
 	void mirror();
+	void createPlaneWithAnnotation();
+
+	bool getRegressivePlanePara(int numCollection, double coord[][3], double* parameter);
+	double Determinant(double* matrix[], int n);
+	double AlCo(double* matrix[], int jie, int row, int column);
+	double Cofactor(double* matrix[], int jie, int row, int column);
+	void Inverse(double *matrix1[], double *matrix2[], int n, double d);
 
 private:
 	Q_DECLARE_PRIVATE(qSlicerSurfaceMirrorModuleWidget);
