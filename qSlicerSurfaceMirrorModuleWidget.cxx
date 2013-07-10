@@ -346,19 +346,19 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 
 				double newOrigin[3], newPoint1[3], newPoint2[3];
 
-				// newOrigin denotes the minimal point
+				// newPoint1 denotes the minimal point
 				if (parameter[0] * minXYZ[0] + parameter[1] * minXYZ[1] + parameter[2] < minXYZ[2]) {
-					newOrigin[0] = minXYZ[0];
-					newOrigin[1] = minXYZ[1];
-					newOrigin[2] = parameter[0] * minXYZ[0] + parameter[1] * minXYZ[1] + parameter[2];
+					newPoint1[0] = minXYZ[0];
+					newPoint1[1] = minXYZ[1];
+					newPoint1[2] = parameter[0] * minXYZ[0] + parameter[1] * minXYZ[1] + parameter[2];
 				} else if ( (minXYZ[2] - parameter[0] * minXYZ[0] - parameter[2]) / parameter[1] < minXYZ[1]) {
-					newOrigin[0] = minXYZ[0];
-					newOrigin[2] = minXYZ[2];
-					newOrigin[1] = (minXYZ[2] - parameter[0] * minXYZ[0] - parameter[2]) / parameter[1];
+					newPoint1[0] = minXYZ[0];
+					newPoint1[2] = minXYZ[2];
+					newPoint1[1] = (minXYZ[2] - parameter[0] * minXYZ[0] - parameter[2]) / parameter[1];
 				} else {
-					newOrigin[1] = minXYZ[1];
-					newOrigin[2] = minXYZ[2];
-					newOrigin[0] = (minXYZ[2] - parameter[1] * minXYZ[1] - parameter[2]) / parameter[0];
+					newPoint1[1] = minXYZ[1];
+					newPoint1[2] = minXYZ[2];
+					newPoint1[0] = (minXYZ[2] - parameter[1] * minXYZ[1] - parameter[2]) / parameter[0];
 				}
 
 
@@ -377,13 +377,27 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 					newPoint2[0] = (maxXYZ[2] - parameter[1] * maxXYZ[1] - parameter[2]) / parameter[0];
 				}
 
-				newPoint1[0] = minXYZ[0];
-				newPoint1[1] = maxXYZ[1];
-				newPoint1[2] = parameter[0] * newPoint1[0] + parameter[1] * newPoint1[1] + parameter[2];
+				double V[3];
+				vtkMath::Subtract(newPoint2, newPoint1, V);
+				double normal[3] = {parameter[0], parameter[1], -1.0};
+				double d[3];
+				vtkMath::Cross(normal, V, d);
+				d[0] = d[0] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
+				d[1] = d[1] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
+				d[2] = d[2] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
+				double M[3];
+				vtkMath::Add(newPoint2, newPoint1, M);
+				M[0] /= 2;
+				M[1] /= 2;
+				M[2] /= 2;
+				vtkMath::Add(M, d, newOrigin);
 
-				this->planeWidget->SetOrigin(newOrigin[0], newOrigin[1], newOrigin[2]);
-				this->planeWidget->SetPoint1(newPoint1[0], newPoint1[1], newPoint1[2]);
-				this->planeWidget->SetPoint2(newPoint2[0], newPoint2[1], newPoint2[2]);
+				this->planeWidget->SetOrigin(newOrigin);
+				this->planeWidget->SetPoint1(newPoint1);
+				this->planeWidget->SetPoint2(newPoint2);
+
+				this->hasPlane = true;
+				d->hideButton->setText(tr("Hide Plane"));
 				this->planeWidget->On();
 			}
 		} else d->hintText->setText("At least three Fiducials needed!");
@@ -434,11 +448,6 @@ bool qSlicerSurfaceMirrorModuleWidget::getRegressivePlanePara(int numCollection,
     	Y[0] += coord[i][0] * coord[i][2];
     	Y[1] += coord[i][1] * coord[i][2];
     	Y[2] += coord[i][2];
-
-        // *(Matrix[0] + j) += coord[i][0] * coord[i][j];
-        // *(Matrix[1] + j) += coord[i][1] * coord[i][j];
-        // *(Matrix[2] + j) += coord[i][2] * coord[i][j];
-        // Y[j] -= coord[i][j];
     }
 
     double double_d = this->Determinant(Matrix, 3);
