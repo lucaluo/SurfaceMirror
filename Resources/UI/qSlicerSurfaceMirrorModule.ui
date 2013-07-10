@@ -77,6 +77,9 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="nodeTypes" stdset="0">
            <stringlist>
             <string>vtkMRMLModelNode</string>
@@ -105,7 +108,51 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="annotationLabel">
+          <property name="text">
+           <string>Select a Fiducial List to Create Plane (Optional)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="qMRMLNodeComboBox" name="annotationNodeComboBox" native="true">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="nodeTypes" stdset="0">
+           <stringlist>
+            <string>vtkMRMLAnnotationHierarchyNode</string>
+           </stringlist>
+          </property>
+          <property name="showHidden" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="showChildNodeTypes" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="hideChildNodeTypes" stdset="0">
+           <stringlist/>
+          </property>
+          <property name="addEnabled" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="removeEnabled" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="renameEnabled" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QPushButton" name="createButton">
           <property name="text">
@@ -114,16 +161,26 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="hideButton">
+         <widget class="QPushButton" name="annotationCreateButton">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
-           <string>Hide Plane</string>
+           <string>Create Plane with Fiducials</string>
           </property>
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="hideButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Hide Plane</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="mirrorButton">
@@ -184,10 +241,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mirrorCollapsibleButton</tabstop>
   <tabstop>MRMLTreeView</tabstop>
-  <tabstop>createButton</tabstop>
-  <tabstop>hideButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -211,6 +265,22 @@
    <sender>qSlicerSurfaceMirrorModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
    <receiver>MRMLTreeView</receiver>
+   <slot>setMRMLScene(vtkMRMLScene*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>72</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>106</x>
+     <y>128</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>qSlicerSurfaceMirrorModule</sender>
+   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
+   <receiver>annotationNodeComboBox</receiver>
    <slot>setMRMLScene(vtkMRMLScene*)</slot>
    <hints>
     <hint type="sourcelabel">
