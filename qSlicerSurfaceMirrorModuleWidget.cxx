@@ -307,7 +307,7 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 
 		int maxNumCollection = annotationChildrenCollection->GetNumberOfItems();
 		int numCollection = 0;
-		double *coord[maxNumCollection];
+		double *coord[3];
 		for (int i = 0; i < maxNumCollection; i++)
 	    {
 	        coord[i]  = new double[3];
