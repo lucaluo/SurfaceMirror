@@ -307,7 +307,11 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 
 		int maxNumCollection = annotationChildrenCollection->GetNumberOfItems();
 		int numCollection = 0;
-		double coord[maxNumCollection][3];
+		double *coord[maxNumCollection];
+		for (int i = 0; i < maxNumCollection; i++)
+	    {
+	        coord[i]  = new double[3];
+	    }
 		double minXYZ[3] = {DBL_MAX, DBL_MAX, DBL_MAX};
 		double maxXYZ[3] = {-DBL_MAX, -DBL_MAX, -DBL_MAX};
 
@@ -380,17 +384,17 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 				double V[3];
 				vtkMath::Subtract(newPoint2, newPoint1, V);
 				double normal[3] = {parameter[0], parameter[1], -1.0};
-				double d[3];
-				vtkMath::Cross(normal, V, d);
-				d[0] = d[0] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
-				d[1] = d[1] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
-				d[2] = d[2] / vtkMath::Norm(d) * vtkMath::Norm(V) / 2;
+				double double_d[3];
+				vtkMath::Cross(normal, V, double_d);
+				double_d[0] = double_d[0] / vtkMath::Norm(double_d) * vtkMath::Norm(V) / 2;
+				double_d[1] = double_d[1] / vtkMath::Norm(double_d) * vtkMath::Norm(V) / 2;
+				double_d[2] = double_d[2] / vtkMath::Norm(double_d) * vtkMath::Norm(V) / 2;
 				double M[3];
 				vtkMath::Add(newPoint2, newPoint1, M);
 				M[0] /= 2;
 				M[1] /= 2;
 				M[2] /= 2;
-				vtkMath::Add(M, d, newOrigin);
+				vtkMath::Add(M, double_d, newOrigin);
 
 				this->planeWidget->SetOrigin(newOrigin);
 				this->planeWidget->SetPoint1(newPoint1);
@@ -407,7 +411,7 @@ void qSlicerSurfaceMirrorModuleWidget::createPlaneWithAnnotation()
 	}
 }
 
-bool qSlicerSurfaceMirrorModuleWidget::getRegressivePlanePara(int numCollection, double coord[][3], double* parameter) {
+bool qSlicerSurfaceMirrorModuleWidget::getRegressivePlanePara(int numCollection, double *coord[3], double* parameter) {
 	Q_D(qSlicerSurfaceMirrorModuleWidget);
 
 	QPalette pal;

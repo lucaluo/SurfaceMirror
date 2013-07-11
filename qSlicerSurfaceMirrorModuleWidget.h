@@ -85,7 +85,7 @@ protected slots:
 	void mirror();
 	void createPlaneWithAnnotation();
 
-	bool getRegressivePlanePara(int numCollection, double coord[][3], double* parameter);
+	bool getRegressivePlanePara(int numCollection, double *coord[3], double* parameter);
 	double Determinant(double* matrix[], int n);
 	double AlCo(double* matrix[], int jie, int row, int column);
 	double Cofactor(double* matrix[], int jie, int row, int column);
