@@ -422,7 +422,7 @@ bool qSlicerSurfaceMirrorModuleWidget::getRegressivePlanePara(int numCollection,
 		std::clog << coord[i][0] << ", " << coord[i][1] << ", " << coord[i][2] << endl;
 	}
 
-	double Y[3];
+	double Y[3] = {0.0, 0.0, 0.0};
 	parameter[0] = 0.0, parameter[1] = 0.0, parameter[2] = 0.0;
 
 	double *Matrix[3], *IMatrix[3];
